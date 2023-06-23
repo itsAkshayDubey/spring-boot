@@ -66,6 +66,7 @@ import org.springframework.util.StringUtils;
  * @author Jean-Pierre Bergamin
  * @author Mahmoud Ben Hassine
  * @author Stephane Nicoll
+ * @author Akshay Dubey
  * @since 2.3.0
  */
 public class JobLauncherApplicationRunner implements ApplicationRunner, Ordered, ApplicationEventPublisherAware {
@@ -178,16 +179,11 @@ public class JobLauncherApplicationRunner implements ApplicationRunner, Ordered,
 		if (this.jobRegistry != null && StringUtils.hasText(this.jobNames)) {
 			String[] jobsToRun = this.jobNames.split(",");
 			for (String jobName : jobsToRun) {
-				try {
-					Job job = this.jobRegistry.getJob(jobName);
-					if (this.jobs.contains(job)) {
-						continue;
-					}
-					execute(job, jobParameters);
+				Job job = this.jobRegistry.getJob(jobName);
+				if (this.jobs.contains(job)) {
+					continue;
 				}
-				catch (NoSuchJobException ex) {
-					logger.debug(LogMessage.format("No job found in registry for job name: %s", jobName));
-				}
+				execute(job, jobParameters);
 			}
 		}
 	}
